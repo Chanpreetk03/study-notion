@@ -1,6 +1,6 @@
 //require
 const Course=require("../models/Course");
-const Tag=require("../models/Tags");
+const Category=require("../models/Category");
 const User=require("../models/User");
 const {uploadImageToCloudinary}=require("../utils/imageUploader");
 
@@ -8,13 +8,13 @@ const {uploadImageToCloudinary}=require("../utils/imageUploader");
 exports.createCourse = async(req,res)=>{
     try {
         //fetch data
-        const {courseName , courseDescription , whatYouWillLearn , price ,tag}=req.body;
+        const {courseName , courseDescription , whatYouWillLearn , price ,category}=req.body;
 
         //get thumbnail
         const thumbnail=req.files.thumbnailImage;
 
         //validation
-        if(!courseName || !courseDescription || !whatYouWillLearn || !price || !tag || !thumbnail){
+        if(!courseName || !courseDescription || !whatYouWillLearn || !price || !category || !thumbnail){
             return res.status(400).json({
                 success:false,
                 message:"All the fields are required"
@@ -34,8 +34,8 @@ exports.createCourse = async(req,res)=>{
         }
 
         //check given tags - validation
-        const tagDetails=await Tag.findById(tag);
-        if(!tagDetails){
+        const tagDetails=await Tag.findById(category);
+        if(!categoryDetails){
             return res.status(404).json({
                 success:false,
                 message:"Tag details not found"
@@ -52,7 +52,7 @@ exports.createCourse = async(req,res)=>{
             instructor:instructorDetails._id,
             whatYouWillLearn:whatYouWillLearn,
             price,
-            tag:tagDetails._id,
+            category:tagDetails._id,
             thumbnail:thumbnailImage.secure_url,
         })
 
@@ -67,7 +67,7 @@ exports.createCourse = async(req,res)=>{
             {new:true}
         )
         
-        //update tag schema
+        //update category schema
         //
 
         //return response
@@ -90,7 +90,13 @@ exports.createCourse = async(req,res)=>{
 exports.showAllCourse = async (req,res)=>{
     try {
         //fetch data
-        const allCourses=await Course.find({} , {courseName:true},{price:true},{thumbnail:true},{instructor:true},{ratingAndReviews:true},{studentsEnrolled:true}).populate("instructor").exec();
+        const allCourses=await Course.find({} , 
+            {courseName:true},
+            {price:true},
+            {thumbnail:true},
+            {instructor:true},
+            {ratingAndReviews:true},
+            {studentsEnrolled:true}).populate("instructor").exec();
 
         //return data
         return res.status(200).json({
