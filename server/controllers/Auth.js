@@ -2,6 +2,9 @@
 const User = require('../models/User')
 const OTP = require('../models/OTP')
 const otpGenerator = require('otp-generator')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 //send otp
 exports.sendOTP = async (req, res) => {
@@ -120,39 +123,107 @@ exports.signUp = async (res, req) => {
 		}
 
 		//hash password
-        const hashPassword=await bcrypt.hash(password,10);
+		const hashPassword = await bcrypt.hash(password, 10)
 
 		//entry in db
-        const profileDetails=await Profile.create({
-            gender:null,
-            dateOfBirth:null,
-            about:null,
-            contactNumber:null
-        })
-        const user=await User.create({
-            firstName,
+		const profileDetails = await Profile.create({
+			gender: null,
+			dateOfBirth: null,
+			about: null,
+			contactNumber: null,
+		})
+		const user = await User.create({
+			firstName,
 			lastName,
 			email,
-			password:hashPassword,
+			password: hashPassword,
 			accountType,
-			additionalDetails:profileDetails._id,
-            image:`https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
-        })
+			additionalDetails: profileDetails._id,
+			image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
+		})
 
 		//return res
-        return res.status(200).json({
-            success:true,
-            message:"User is registered successfully",
-            user
-        })
+		return res.status(200).json({
+			success: true,
+			message: 'User is registered successfully',
+			user,
+		})
 	} catch (error) {
-        return res.status(500).json({
-            success:false,
-            message:"User could not be registered. Please try again"
-        })
-    }
+		return res.status(500).json({
+			success: false,
+			message: 'User could not be registered. Please try again',
+		})
+	}
 }
 
 //login
+exports.login = async (res, req) => {
+	try {
+		//get data from req.body
+		const { email, password } = req.body
+
+		//validate
+		if (!email || !password) {
+			return res.status(500).json({
+				success: false,
+				message: 'all fields are required. Please try again',
+			})
+		}
+
+		//user should exist
+		const user = await User.findOne({ email }).populate('additionalDetails')
+		if (!user) {
+			return res.status(401).json({
+				success: false,
+				message: 'User is not registered. Please try again',
+			})
+		}
+
+		//generate jwt, after matching password
+		if (await bcrypt.compare(password, user.password)) {
+			const payload = {
+				email: user.email,
+				id: user._id,
+				role: user.role,
+			}
+			const token = jwt.sign(payload.process.env.JWT_SECRET, {
+				expiresIn: '2h',
+			})
+			user.token = token
+			user.password = undefined
+			//create cookie and send res
+			//cookie will expire after 3 days
+			const options = {
+				expires: newDate(Date.now() + 3 * 24 * 60 * 60 * 1000),
+			}
+			res.cookie('token', token, options).status(200).json({
+				success: true,
+				token,
+				user,
+				message: 'Logged In successfully',
+			})
+		}
+        else{
+            return res.status(401).json({
+                success:false,
+                message:"Password is incorrect"
+            })
+        }
+	} catch (error) {
+        console.log(error);
+        console.error(error);
+        return res.status(500).json({
+            success:false,
+            message:"login failure. Please try again"
+        });
+    }
+}
 
 //change password
+exports.changePassword=async(req,res)=>{
+    //fetch data : oldPassword, newPassword , confirmPassword , email
+    //validation
+    //update pwd in db
+    //send mail-password updated
+    //return password
+}
