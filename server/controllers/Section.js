@@ -93,6 +93,7 @@ exports.deleteSection = async (req, res) => {
         }
 
         //use find by id and delete
+		// do we need to delete entry from course schema
         await Section.findByIdAndDelete(sectionId);
         
         //return response
