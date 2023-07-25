@@ -1,5 +1,7 @@
 //require
 const mongoose = require('mongoose')
+const mailSender = require("../utils/mailSender");
+const emailTemplate = require("../mail/templates/emailVerificationTemplate");
 
 //otp schema
 const OTPSchema = new mongoose.Schema({
@@ -14,23 +16,25 @@ const OTPSchema = new mongoose.Schema({
     createdAt:{
         type:Date,
         default:Date.now(),
-        expires:5*60,
+        expires:60*5,
     }
 })
 
 //function to send otp mails
 async function sendVerificationEmail(email,otp){
     try {
-        const mailResponse=await mailSender(email , "verification mail from study Notion" , otp);
-        console.log("mail sent successfully" , mailResponse)
+        const mailResponse=await mailSender(email , "verification mail from study Notion" , emailTemplate(otp));
+        console.log("mail sent successfully" , mailResponse.response)
     } catch (error) {
-        console.error("Error occured while sending mail:",error);
+        console.error("Error occurred while sending mail:",error);
         throw error;
     }
 }
 
 OTPSchema.pre("save" , async function(next){
-    await sendVerificationEmail(this.email,this.otp);
+    if(this.isNew){
+        await sendVerificationEmail(this.email,this.otp);
+    }
     next();
 })
 

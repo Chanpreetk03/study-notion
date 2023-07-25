@@ -5,7 +5,6 @@ const mongoose=require("mongoose");
 const ProfileSchema=new mongoose.Schema({
     gender:{
         type:String,
-        enum:["Mail" , "Female","Prefer Not to say"],
     },
     dateOfBirth:{
         type:String
