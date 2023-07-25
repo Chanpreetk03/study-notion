@@ -66,7 +66,7 @@ exports.updateSection = async (req, res) => {
 		//return response
 		return res.status(200).json({
 			success: true,
-			message: 'Section updated successfully',
+			message: section,
 		})
 	} catch (error) {
 		console.log(error)

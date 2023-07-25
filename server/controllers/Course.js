@@ -8,7 +8,13 @@ const { uploadImageToCloudinary } = require('../utils/imageUploader')
 exports.createCourse = async (req, res) => {
 	try {
 		//fetch data
-		const { courseName, courseDescription, whatYouWillLearn, price, category } = req.body
+		const { courseName, 
+			courseDescription, 
+			whatYouWillLearn, 
+			price, 
+			category,
+			status,
+			instructions } = req.body
 
 		//get thumbnail
 		const thumbnail = req.files.thumbnailImage
@@ -41,11 +47,11 @@ exports.createCourse = async (req, res) => {
 		}
 
 		//check given tags - validation
-		const tagDetails = await Tag.findById(category)
+		const categoryDetails = await Category.findById(category)
 		if (!categoryDetails) {
 			return res.status(404).json({
 				success: false,
-				message: 'Tag details not found',
+				message: 'Category details not found',
 			})
 		}
 
@@ -59,8 +65,11 @@ exports.createCourse = async (req, res) => {
 			instructor: instructorDetails._id,
 			whatYouWillLearn: whatYouWillLearn,
 			price,
-			category: tagDetails._id,
+			tag:tag,
+			category: categoryDetails._id,
 			thumbnail: thumbnailImage.secure_url,
+			status:status,
+			instructions:instructions
 		})
 
 		//add the course in user schema
@@ -75,7 +84,15 @@ exports.createCourse = async (req, res) => {
 		)
 
 		//update category schema
-		//
+		await Category.findByIdAndUpdate(
+			{ _id: category },
+			{
+				$push: {
+					course: newCourse._id,
+				},
+			},
+			{ new: true }
+		);
 
 		//return response
 		return res.status(200).json({

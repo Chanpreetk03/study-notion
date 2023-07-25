@@ -29,7 +29,7 @@ exports.resetPasswordToken = async (req, res) => {
 			},
 			{ new: true }
 		)
-
+		console.log("Details:", updateDetails);
 		//create url
 		const url = `http://localhost:3000/update-password/${token}`
 
@@ -77,7 +77,7 @@ exports.resetPassword = async (req, res) => {
 		}
 
 		//token time check
-		if (userDetails.resetPasswordExpires > Date.now()) {
+		if (userDetails.resetPasswordExpires <= Date.now()) {
 			return res.json({
 				success: false,
 				message: 'Token is expired, please regenerate your token',
