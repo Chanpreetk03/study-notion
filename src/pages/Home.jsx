@@ -7,6 +7,7 @@ import Banner from '../assets/Images/banner.mp4'
 import CodeBlocks from '../components/Core/HomePage/CodeBlocks'
 import TimeLineSection from '../components/Core/HomePage'
 import LearningLanguageSection from '../components/Core/HomePage'
+import InstructorSection from "../components/Core/HomePage/InstructorSection"
 
 const Home = () => {
 	return (
@@ -144,7 +145,14 @@ const Home = () => {
 				</div>
 			</div>
 
-			{/* section 2 */}
+			{/* section 3 */}
+
+			<div className='w-11/1 mx-auto max-w-maxContent flex-col justify-between gap-8 items-center first-letter bg-richblack-800 text-white'>
+				<InstructorSection/>
+
+				<h2 className='text-4xl font-semibold text-center mt-10'>Review from other learners</h2>
+			</div>
+
 			{/* Footer */}
 		</div>
 	)
