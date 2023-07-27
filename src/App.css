@@ -3,6 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
+html,body{
     overflow-x: hidden;
+}
+
+.homepage_bg{
+    background: url("../src//assets/Images/bghome.svg");
 }
