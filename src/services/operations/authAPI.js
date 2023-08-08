@@ -119,7 +119,7 @@ export function getPasswordResetToken(email, setEmailSent) {
 				email,
 			})
 
-			console.log('RESETPASSTOKEN RESPONSE............', response)
+			console.log('RESET PASSWORD TOKEN RESPONSE............', response)
 
 			if (!response.data.success) {
 				throw new Error(response.data.message)
@@ -128,7 +128,7 @@ export function getPasswordResetToken(email, setEmailSent) {
 			toast.success('Reset Email Sent')
 			setEmailSent(true)
 		} catch (error) {
-			console.log('RESETPASSTOKEN ERROR............', error)
+			console.log('RESET PASSWORD TOKEN ERROR............', error)
 			toast.error('Failed To Send Reset Email')
 		}
 		toast.dismiss(toastId)
