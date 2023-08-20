@@ -110,7 +110,7 @@ exports.createCourse = async (req, res) => {
 }
 
 //get all courses handler
-exports.getAllCourse = async (req, res) => {
+exports.getAllCourses = async (req, res) => {
 	try {
 		//fetch data
 		const allCourses = await Course.find(
