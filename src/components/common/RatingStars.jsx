@@ -31,3 +31,5 @@ function RatingStars({ Review_Count, Star_Size }) {
 		</div>
 	)
 }
+
+export default RatingStars

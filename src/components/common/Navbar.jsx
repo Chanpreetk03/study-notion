@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { AiOutlineShoppingCart } from 'react-icons/ai'
 import ProfileDropDown from '../core/Auth/ProfileDropDown'
-import { apiConnector } from '../../services/apiconnector'
+import { apiConnector } from '../../services/apiConnector'
 import { categories } from '../../services/apis'
 import { useState } from 'react'
 import { IoIosArrowDropdownCircle } from 'react-icons/io'
@@ -54,7 +54,7 @@ const Navbar = () => {
 			<div className='flex w-11/12 max-w-maxContent items-center justify-between'>
 				{/* Image */}
 				<Link to='/'>
-					<img src={logo} width={160} height={42} loading='lazy' />
+					<img src={logo} width={160} height={42} loading='lazy' alt='' />
 				</Link>
 
 				{/* Nav Links */}
