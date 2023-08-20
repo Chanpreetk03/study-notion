@@ -5,11 +5,11 @@ import BannerImage1 from '../assets/Images/aboutus1.webp'
 import BannerImage2 from '../assets/Images/aboutus2.webp'
 import BannerImage3 from '../assets/Images/aboutus3.webp'
 import Footer from '../components/Common/Footer'
-import ReviewSlider from '../components/Common/ReviewSlider'
-import ContactFormSection from '../components/core/AboutPage/ContactFormSection'
-import LearningGrid from '../components/core/AboutPage/LearningGrid'
-import Quote from '../components/core/AboutPage/Quote'
-import StatsComponenet from '../components/core/AboutPage/Stats'
+import ReviewSlider from '../components/common/ReviewSlider'
+import ContactUsFormSection from '../components/core/About/ContactFormSection'
+import LearningGrid from '../components/core/About/LearningGrid'
+import Quote from '../components/core/About/Quote'
+import StatsComponent from '../components/core/About/StatsComponent'
 import HighlightText from '../components/core/HomePage/HighlightText'
 
 const About = () => {
@@ -97,10 +97,10 @@ const About = () => {
 				</div>
 			</section>
 
-			<StatsComponenet />
+			<StatsComponent/>
 			<section className='mx-auto mt-20 flex w-11/12 max-w-maxContent flex-col justify-between gap-10 text-white'>
 				<LearningGrid />
-				<ContactFormSection />
+				<ContactUsFormSection/>
 			</section>
 
 			<div className='relative mx-auto my-20 flex w-11/12 max-w-maxContent flex-col items-center justify-between gap-8 bg-richblack-900 text-white'>
