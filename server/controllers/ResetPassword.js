@@ -1,6 +1,7 @@
 //require
 const User = require('../models/User')
 const mailSender = require('../utils/mailSender')
+const bcrypt = require('bcrypt')
 
 //reset password token
 exports.resetPasswordToken = async (req, res) => {
@@ -25,7 +26,7 @@ exports.resetPasswordToken = async (req, res) => {
 			{ email: email },
 			{
 				toke: token,
-				resetPasswordExpires: date.now() + 5 * 60 * 1000,
+				resetPasswordExpires: Date.now() + 5 * 60 * 1000,
 			},
 			{ new: true }
 		)
@@ -66,7 +67,7 @@ exports.resetPassword = async (req, res) => {
 		}
 
 		//get user details from db using token
-		const userDetails = await user.findOne({ token: token })
+		const userDetails = await User.findOne({ token: token })
 
 		//if no entry : invalid token
 		if (!userDetails) {

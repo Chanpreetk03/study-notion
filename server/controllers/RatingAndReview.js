@@ -1,6 +1,7 @@
 //require
 const RatingAndReviews = require('../models/RatingAndReview')
 const Course = require('../models/Course')
+const mongoose = require("mongoose")
 
 //create Rating
 exports.createRating = async (req, res) => {
@@ -44,15 +45,12 @@ exports.createRating = async (req, res) => {
 		})
 
 		//attach to course
-		await Course.findByIdAndUpdate(
-			{ _id: courseId },
-			{
-				$push: {
-					ratingAndReviews: ratingReview._id,
-				},
+		await Course.findByIdAndUpdate(courseId, {
+			$push: {
+				ratingAndReviews: ratingReview,
 			},
-			{ new: true }
-		)
+		})
+		await courseDetails.save()
 
 		//return response
 		return res.status(200).json({
@@ -117,7 +115,7 @@ exports.getAverageRating = async (req, res) => {
 exports.getAllRating = async (req, res) => {
 	try {
 		//fetch data
-		const allReviews = await RatingAndReview.find({})
+		const allReviews = await RatingAndReviews.find({})
 			.sort({ rating: 'desc' })
 			.populate({
 				path: 'user',

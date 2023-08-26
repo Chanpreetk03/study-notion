@@ -9,6 +9,10 @@ const {
   createCourse,
   getAllCourses,
   getCourseDetails,
+  getFullCourseDetails,
+  editCourse,
+  getInstructorCourses,
+  deleteCourse,
 } = require("../controllers/Course")
 
 
@@ -40,6 +44,11 @@ const {
   getAllRating,
 } = require("../controllers/RatingAndReview")
 
+const {
+  updateCourseProgress,
+  getProgressPercentage,
+} = require("../controllers/courseProgress")
+
 // Importing Middlewares
 const { auth, isInstructor, isStudent, isAdmin } = require("../middlewares/auth")
 
@@ -65,6 +74,18 @@ router.post("/addSubSection", auth, isInstructor, createSubSection)
 router.get("/getAllCourses", getAllCourses)
 // Get Details for a Specific Courses
 router.post("/getCourseDetails", getCourseDetails)
+// Edit Course routes
+router.post("/editCourse", auth, isInstructor, editCourse)
+// Get all Courses Under a Specific Instructor
+router.get("/getInstructorCourses", auth, isInstructor, getInstructorCourses)
+// Get all Registered Courses
+router.post("/getFullCourseDetails", auth, getFullCourseDetails)
+// To Update Course Progress
+router.post("/updateCourseProgress", auth, isStudent, updateCourseProgress)
+// To get Course Progress
+// router.post("/getProgressPercentage", auth, isStudent, getProgressPercentage)
+// Delete a Course
+router.delete("/deleteCourse", deleteCourse)
 
 // ********************************************************************************************************
 //                                      Category routes (Only by Admin)

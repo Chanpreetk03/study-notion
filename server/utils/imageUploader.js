@@ -6,12 +6,13 @@ exports.uploadImageToCloudinary=async (file,folder,height,quality)=>{
     const options={folder};
     //check height
     if(height){
-        option.height=height;
+        options.height=height;
     }
     //check quality
     if(quality){
-        option.quality=quality;
+        options.quality=quality;
     }
     options.resource_type="auto";
-    return await cloudinary.uploader(file,tempFilePath , options);
+    console.log("OPTIONS:" , options);
+    return await cloudinary.uploader(file.tempFilePath , options);
 }

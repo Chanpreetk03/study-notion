@@ -8,7 +8,7 @@ exports.createCategory = async (req, res) => {
 		const { name, description } = req.body
 
 		//validation
-		if (!name ) {
+		if (!name) {
 			return res.status(400).json({
 				success: false,
 				message: 'All fields are required',
@@ -39,7 +39,7 @@ exports.createCategory = async (req, res) => {
 exports.showAllCategories = async (req, res) => {
 	try {
 		//fetch data
-		const allCategories = await Category.find({}, { name: true, description: true })
+		const allCategories = await Category.find()
 
 		//return data
 		res.status(200).json({
@@ -62,13 +62,30 @@ exports.getCategoryPageDetails = async (req, res) => {
 		const { categoryId } = req.body
 
 		//get courses for specified categoryid
-		const selectedCategory = await Category.findById(categoryId).populate('courses').exec()
+		const selectedCategory = await Category.findById(categoryId)
+			.populate({
+				path: 'courses',
+				match: { status: 'Published' },
+				populate: 'ratingAndReviews',
+			})
+			.exec()
+
+		console.log('selected category:', selectedCategory)
 
 		//validation
 		if (!selectedCategory) {
 			return res.status(404).json({
 				success: false,
 				message: 'data not found',
+			})
+		}
+
+		// Handle the case when there are no courses
+		if (selectedCategory.courses.length === 0) {
+			console.log('No courses found for the selected category.')
+			return res.status(404).json({
+				success: false,
+				message: 'No courses found for the selected category.',
 			})
 		}
 
@@ -80,13 +97,21 @@ exports.getCategoryPageDetails = async (req, res) => {
 			.exec()
 
 		//get top selling courses
-
+		const allCategories = await Category.find()
+			.populate({
+				path: 'courses',
+				match: { status: 'Published' },
+			})
+			.exec()
+		const allCourses = allCategories.flatMap((category) => category.courses)
+		const mostSellingCourses = allCourses.sort((a, b) => b.sold - a.sold).slice(0, 10)
 		//return response
 		return res.status(200).json({
 			success: true,
 			data: {
 				selectedCategory,
 				differentCategories,
+				mostSellingCourses,
 			},
 		})
 	} catch (error) {
