@@ -1,9 +1,9 @@
-//require
-const SubSection = require('../models/SubSection')
-const Section = require('../models/SubSection')
-require('dotenv').config()
+// Import necessary modules
+const Section = require('../models/Section')
+const SubSection = require('../models/Subsection')
 const { uploadImageToCloudinary } = require('../utils/imageUploader')
-//create subsection
+
+// Create a new sub-section for a given section
 exports.createSubSection = async (req, res) => {
 	try {
 		// Extract necessary information from the request body
@@ -37,16 +37,16 @@ exports.createSubSection = async (req, res) => {
 		// Return the updated section in the response
 		return res.status(200).json({ success: true, data: updatedSection })
 	} catch (error) {
-		console.log(error)
+		// Handle any errors that may occur during the process
+		console.error('Error creating new sub-section:', error)
 		return res.status(500).json({
 			success: false,
-			message: 'sub-section not created successfully',
+			message: 'Internal server error',
 			error: error.message,
 		})
 	}
 }
 
-//update subsection handler
 exports.updateSubSection = async (req, res) => {
 	try {
 		const { sectionId, subSectionId, title, description } = req.body
@@ -74,8 +74,12 @@ exports.updateSubSection = async (req, res) => {
 		}
 
 		await subSection.save()
+
 		// find updated section and return it
 		const updatedSection = await Section.findById(sectionId).populate('subSection')
+
+		console.log('updated section', updatedSection)
+
 		return res.json({
 			success: true,
 			message: 'Section updated successfully',
@@ -90,7 +94,6 @@ exports.updateSubSection = async (req, res) => {
 	}
 }
 
-//delete subsection handler
 exports.deleteSubSection = async (req, res) => {
 	try {
 		const { subSectionId, sectionId } = req.body
@@ -108,9 +111,13 @@ exports.deleteSubSection = async (req, res) => {
 			return res.status(404).json({ success: false, message: 'SubSection not found' })
 		}
 
+		// find updated section and return it
+		const updatedSection = await Section.findById(sectionId).populate('subSection')
+
 		return res.json({
 			success: true,
 			message: 'SubSection deleted successfully',
+			data: updatedSection,
 		})
 	} catch (error) {
 		console.error(error)

@@ -2,7 +2,7 @@
 const express = require('express')
 const router = express.Router()
 
-const { auth, isInstructor } = require('../middleware/auth')
+const { auth, isInstructor } = require('../middlewares/auth')
 const {
 	deleteAccount,
 	updateProfile,

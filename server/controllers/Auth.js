@@ -69,9 +69,10 @@ exports.sendOTP = async (req, res) => {
 }
 
 //signup
-exports.signUp = async (res, req) => {
+exports.signUp = async (req, res) => {
 	try {
-		//fetch data from req body
+		// Destructure fields from the request body
+		console.log("1")
 		const {
 			firstName,
 			lastName,
@@ -82,58 +83,58 @@ exports.signUp = async (res, req) => {
 			contactNumber,
 			otp,
 		} = req.body
-
-		//validate data
+		console.log("2")
+		// Check if All Details are there or not
 		if (!firstName || !lastName || !email || !password || !confirmPassword || !otp) {
-			return res(403).json({
+			return res.status(403).send({
 				success: false,
-				message: 'All fields are required',
+				message: 'All Fields are required',
 			})
 		}
-
-		//match both passwords
+		console.log("3")
+		// Check if password and confirm password match
 		if (password !== confirmPassword) {
 			return res.status(400).json({
 				success: false,
-				message: "Password and confirm password don't match",
+				message: 'Password and Confirm Password do not match. Please try again.',
 			})
 		}
-
-		//check if user exists
+		console.log("4")
+		// Check if user already exists
 		const existingUser = await User.findOne({ email })
 		if (existingUser) {
 			return res.status(400).json({
 				success: false,
-				message: 'User is already registered',
+				message: 'User already exists. Please sign in to continue.',
 			})
 		}
-
-		//find most recent otp for user
-		const recent = await OTP.find({ email }.sort({ createdAt: -1 }).limit(1))
-		console.log(recent)
-
-		//validate otps
-		if (recent.length === 0) {
-			//otp not found
+		console.log("5")
+		// Find the most recent OTP for the email
+		const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1)
+		console.log(response)
+		if (response.length === 0) {
+			// OTP not found for the email
+			console.log("6")
 			return res.status(400).json({
 				success: false,
-				message: 'OTP not found',
+				message: 'The OTP is not valid',
 			})
-		} else if (otp !== recent[0].otp) {
-			res.status(400).json({
+		} else if (otp !== response[0].otp) {
+			// Invalid OTP
+			return res.status(400).json({
 				success: false,
-				message: 'Invalid otp',
+				message: 'The OTP is not valid',
 			})
 		}
 
-		//hash password
-		const hashPassword = await bcrypt.hash(password, 10)
-
-		//Create the user
+		// Hash the password
+		const hashedPassword = await bcrypt.hash(password, 10)
+		console.log("7")
+		// Create the user
 		let approved = ''
 		approved === 'Instructor' ? (approved = false) : (approved = true)
-
-		//entry in db
+		console.log("8")
+		// Create the Additional Profile For User
 		const profileDetails = await Profile.create({
 			gender: null,
 			dateOfBirth: null,
@@ -145,36 +146,36 @@ exports.signUp = async (res, req) => {
 			lastName,
 			email,
 			contactNumber,
-			password: hashPassword,
+			password: hashedPassword,
 			accountType: accountType,
 			approved: approved,
 			additionalDetails: profileDetails._id,
-			image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
+			image: '',
 		})
-
-		//return res
+		console.log("9")
 		return res.status(200).json({
 			success: true,
-			message: 'User is registered successfully',
 			user,
+			message: 'User registered successfully',
 		})
 	} catch (error) {
+		console.error(error)
 		return res.status(500).json({
 			success: false,
-			message: 'User could not be registered. Please try again',
+			message: 'User cannot be registered. Please try again.',
 		})
 	}
 }
 
 //login
-exports.login = async (res, req) => {
+exports.login = async (req, res) => {
 	try {
 		//get data from req.body
 		const { email, password } = req.body
 
 		//validate
 		if (!email || !password) {
-			return res.status(500).json({
+			return res.status(400).json({
 				success: false,
 				message: 'all fields are required. Please try again',
 			})
