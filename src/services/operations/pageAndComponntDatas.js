@@ -3,6 +3,8 @@ import { toast } from "react-hot-toast"
 import { apiConnector } from "../apiConnector"
 import { catalogData } from "../apis"
 
+const {CATALOGPAGEDATA_API}=catalogData;
+
 export const getCatalogPageData = async (categoryId) => {
   const toastId = toast.loading("Loading...")
   let result = []

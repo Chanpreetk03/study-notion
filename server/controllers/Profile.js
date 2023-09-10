@@ -24,6 +24,9 @@ exports.updateProfile = async (req, res) => {
 		//get user id
 		const id = req.user.id
 
+		const userDetails = await User.findById(id)
+		const profileId = userDetails.additionalDetails
+		
 		//validation
 		if (!contactNumber || !gender) {
 			return res.status(400).json({
@@ -33,8 +36,7 @@ exports.updateProfile = async (req, res) => {
 		}
 
 		//find profile
-		const userDetails = await User.findById(id)
-		const profileId = userDetails.additionalDetails
+		
 		const profileDetails = await Profile.findById(profileId)
 
 		const user = await User.findByIdAndUpdate(id, {

@@ -12,6 +12,7 @@ const { convertSecondsToDuration } = require('../utils/secToDuration')
 exports.createCourse = async (req, res) => {
 	try {
 		//fetch data
+		console.log("1");
 		let {
 			courseName,
 			courseDescription,
@@ -23,11 +24,13 @@ exports.createCourse = async (req, res) => {
 			instructions: _instructions,
 		} = req.body
 		//get thumbnail
+		console.log("2");
 		const thumbnail = req.files.thumbnailImage
-
+		console.log("3");
 		const tag = JSON.parse(_tag)
+		console.log("4");
 		const instructions = JSON.parse(_instructions)
-
+		console.log("5");
 		//validation
 		if (
 			!courseName ||
@@ -44,24 +47,27 @@ exports.createCourse = async (req, res) => {
 				message: 'All the fields are required',
 			})
 		}
+		console.log("6");
 		if (!status || status === undefined) {
 			status = 'Draft'
 		}
-
+		console.log("7");
 		//check for instructor
 		const userId = req.user.id
+		console.log("8");
 		const instructorDetails = await User.findById(userId, {
 			accountType: 'Instructor',
 		})
+		console.log("9");
 		console.log('Instructor Details', instructorDetails)
-
+		console.log("10");
 		if (!instructorDetails) {
 			return res.status(500).json({
 				success: false,
 				message: 'Instructor details not found',
 			})
 		}
-
+		console.log("11");
 		//check given tags - validation
 		const categoryDetails = await Category.findById(category)
 		if (!categoryDetails) {
@@ -70,10 +76,10 @@ exports.createCourse = async (req, res) => {
 				message: 'Category details not found',
 			})
 		}
-
+		console.log("12");
 		//Upload images to cloudinary
 		const thumbnailImage = await uploadImageToCloudinary(thumbnail, process.env.FOLDER_NAME)
-
+		console.log("13");
 		//create an entry for new cours
 		const newCourse = await Course.create({
 			courseName,
@@ -87,7 +93,7 @@ exports.createCourse = async (req, res) => {
 			status: status,
 			instructions: instructions,
 		})
-
+		console.log("14");
 		//add the course in user schema
 		await User.findByIdAndUpdate(
 			{ _id: instructorDetails._id },
@@ -98,7 +104,7 @@ exports.createCourse = async (req, res) => {
 			},
 			{ new: true }
 		)
-
+		console.log("15");
 		//update category schema
 		const catDet = await Category.findByIdAndUpdate(
 			{ _id: category },
@@ -110,6 +116,7 @@ exports.createCourse = async (req, res) => {
 			{ new: true }
 		)
 		console.log('Here:', catDet)
+		console.log("16");
 		//return response
 		return res.status(200).json({
 			success: true,
