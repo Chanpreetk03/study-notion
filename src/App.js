@@ -43,7 +43,7 @@ function App() {
 			const token = JSON.parse(localStorage.getItem('token'))
 			dispatch(getUserDetails(token, navigate))
 		}
-	}, [])
+	}, [dispatch,navigate])
 	return (
 		<div className='w-screen min-h-screen bg-richblack-900 flex flex-col font-inter'>
 			<Navbar />
