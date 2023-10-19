@@ -14,7 +14,7 @@ import	ProfileDropdown from "../core/Auth/ProfileDropDown"
 // const subLinks = [
 //   {
 //     title: "Python",
-//     link: "/catalog/python",
+//     link: "/catalog/python", 
 //   },
 //   {
 //     title: "javascript",
@@ -88,7 +88,7 @@ function Navbar() {
 												) : subLinks.length ? (
 													<>
 														{subLinks
-															?.filter((subLink) => subLink?.course?.length > 0)
+															?.filter((subLink) => subLink?.course?.length >= 0)
 															?.map((subLink, i) => (
 																<Link
 																	to={`/catalog/${subLink.name.split(' ').join('-').toLowerCase()}`}
