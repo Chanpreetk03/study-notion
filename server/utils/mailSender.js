@@ -15,12 +15,12 @@ const mailSender=async (email,title,body)=>{
             from:`Study Notion | <${process.env.MAIL_USER}>`,
             to:`${email}`,
             subject:`${title}`,
-            body:`${body}`,
+            html:`${body}`,
         })
         console.log(info);
         return info;
     } 
-    catch (error) {
+    catch (error) { 
         console.error(error.message);
         return error.message
     }
