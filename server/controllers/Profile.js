@@ -110,7 +110,7 @@ exports.getAllUserDetails = async (req, res) => {
 	try {
 		//fetch data
 		const id = req.user.id
-		const userDetails = await User.findById(id).populate('additional details').exec()
+		const userDetails = await User.findById(id).populate('additionalDetails').exec()
 
 		//validate
 		if (!userDetails) {
