@@ -121,6 +121,7 @@ exports.signUp = async (req, res) => {
 			})
 		} else if (otp !== response[0].otp) {
 			// Invalid OTP
+			console.log("x");
 			return res.status(400).json({
 				success: false,
 				message: 'The OTP is not valid',
