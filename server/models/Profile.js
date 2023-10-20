@@ -14,7 +14,10 @@ const ProfileSchema=new mongoose.Schema({
     },
     contactNumber:{
         type:Number,
-    }
+    },
+    additionalDetails: {
+		type: String,
+	},
 });
 
 module.exports=mongoose.model("Profile" , ProfileSchema);
