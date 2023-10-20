@@ -21,11 +21,18 @@ const PORT = process.env.PORT || 4000
 database.connect()
 
 //middlewares
+var whitelist = ['http://localhost:3000', 'https://study-notion13.vercel.app']
 app.use(express.json())
 app.use(cookieParser())
 app.use(
 	cors({
-		origin: 'https://localhost:3000',
+		origin: function (origin, callback) {
+			if (whitelist.indexOf(origin) !== -1) {
+			  callback(null, true)
+			} else {
+			  callback(new Error('Not allowed by CORS'))
+			}
+		  },
 		credentials: true,
 	})
 )
